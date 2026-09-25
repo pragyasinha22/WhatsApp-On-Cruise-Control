@@ -1,0 +1,5 @@
+auth_info_baileys/
+chroma_data/
+logs/
+.env
+kill_switch.flag

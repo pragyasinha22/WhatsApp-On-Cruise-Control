@@ -1,0 +1,25 @@
+{
+  "file": "C:\\Users\\psinh\\Desktop\\MasaiProjects\\WhatsApp_On-Cruise-Control\\week1\\data\\raw_export\\family.txt",
+  "sender_name": "Pragya",
+  "sample_size": 18,
+  "hinglish_ratio_pct": 83.33,
+  "average_message_length_words": 5.67,
+  "top_emojis": [
+    {
+      "emoji": "😊",
+      "count": 2
+    },
+    {
+      "emoji": "❤",
+      "count": 2
+    },
+    {
+      "emoji": "😄",
+      "count": 2
+    },
+    {
+      "emoji": "😂",
+      "count": 1
+    }
+  ]
+}
