@@ -777,3 +777,73 @@ In Streamlit, make sure LIVE is ON.
 
 Test-Path .\kill_switch.flag 
   True or False
+
+
+
+
+
+
+
+  ---------------------------------------
+  Remove-Item .\logs -Recurse -Force -ErrorAction SilentlyContinue
+  Remove-Item .\chroma_data -Recurse -Force -ErrorAction SilentlyContinue
+  Remove-Item .\auth_info_baileys -Recurse -Force -ErrorAction SilentlyContinue
+
+  New-Item .\logs -ItemType Directory -Force
+
+Start ChromaDB
+  python -m pip install --force-reinstall --no-deps chromadb==1.5.9 (Repair only the Chroma launcher incase project name is chnaged)
+  chroma run --path .\chroma_data --port 8000 (it creates chroma_data folder with chroma.sqlite3 file)
+
+Rebuild ChromaDB
+  python .\ingestion\embed_to_chroma.py  (it creates 2 folders within chroma_data)
+
+  python -m ingestion.retrieval_demo
+
+Start the Flask bridge 
+  python -m agent.bridge 
+
+Start fresh Baileys  
+  node .\whatsapp\baileys_client.js (it creates auth_info_baileys folder)
+
+--------------------------------------------------------------------------
+for test msg reply generate reply use -python -m agent.batch_test
+====================================================================================================
+SUMMARY
+====================================================================================================
+Message              Relationship   Decision   Reason                                 Reply
+----------------------------------------------------------------------------------------------------
+Hello                friend         ignore     own message                            
+Hello everyone       group          ignore     group chat, not allowlisted            
+Hello                unknown        ignore     sender not in allowlist                
+                     friend         reply      media_ack                              Sorry, thoda busy hoon abhi. Baad m
+Check this out       friend         ignore     forwarded content, not a real questi   
+thanks               friend         ignore     low-signal ack, no reply needed        
+Can you send me 50   friend         ignore     intent check requires human            
+Movie ka plan hai    friend         reply      passed all gates                       Sorry, thoda busy hoon abhi. Baad m
+Sunday ko ghar aao   family         reply      passed all gates                       Sorry, thoda busy hoon abhi. Baad m
+Can we connect tom   professional   ignore     intent check requires human            
+----------------------------------------------------------------------------------------------------------------------------------------
+(.venv) PS C:\Users\psinh\Desktop\MasaiProjects\WhatsApp-On-Cruise-Control\week4> Invoke-RestMethod -Uri "http://127.0.0.1:5001/process" -Method Post -ContentType "application/json" -Body '{"jid":"1112223334@s.whatsapp.net","text":"Movie ka plan hai","message_type":"text","is_forwarded":false,"from_me":false}'
+
+reason                    relationship reply                                               should_reply
+------                    ------------ -----                                               ------------
+passed all gates friend   Sorry, thoda busy hoon abhi. Baad mein reply karti hoon.         True
+
+
+(.venv) PS C:\Users\psinh\Desktop\MasaiProjects\WhatsApp-On-Cruise-Control\week4> 
+
+----------------------------------------------------------------------------------
+So when a new WhatsApp message arrives:
+
+    Baileys receives it.
+    Baileys sends the message to Flask at port 5001.
+    Flask passes it to your Python agent.
+    Agent decides REPLY or IGNORE.
+    If needed, it generates a reply using your history/persona system.
+    The result goes back toward Baileys.
+    Baileys handles the WhatsApp send.
+
+🧪 DRY RUN simulated test: ChromaDB + Python test/pipeline + Streamlit
+🔴 LIVE WhatsApp: ChromaDB + Flask + Baileys + Python agent + Streamlit(All need to run)
+  
